@@ -1,0 +1,60 @@
+# fly.toml app configuration file generated for warpstream-agent-demo on 2023-08-25T16:13:57-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "FILL_IN_YOUR_WARPSTREAM_APP_NAME"
+# Set whatever region you prefer here: https://fly.io/docs/reference/regions/
+primary_region = "atl"
+kill_signal = "SIGINT"
+kill_timeout = "1m0s"
+
+[build]
+
+[env]
+  # This is required because otherwise the Agent's will advertise their internal fly.io IP6
+  # address to the service discovery system for the Kafka service, but this IP address is
+  # not routable from outside of your fly.io VPC.
+  WARPSTREAM_DISCOVERY_KAFKA_HOSTNAME_OVERRIDE = "YOUR_APP_NAME.fly.dev"
+  # This one is not required, but is included in case you want to expose the Kafka protocol
+  # on a port besides 9092 externally.
+  WARPSTREAM_DISCOVERY_KAFKA_PORT_OVERRIDE = "9092"
+  # The value for this can be found in the "Virtual Clusters" section of the WarpStream admin
+  # console.
+  WARPSTREAM_DEFAULT_VIRTUAL_CLUSTER_ID = "FILL_ME_IN_FROM_WARPSTREAM_ADMIN_CONSOLE"
+  # Fill this in with values for your S3 bucket. The example uses Cloudflare R2, but any S3-compatible
+  # object store will work.
+  WARPSTREAM_BUCKET_URL = "s3://FILL_ME_IN_BUCKET_NAME?s3ForcePathStyle=true&region=auto&endpoint=https://FILL_ME_IN_ENDPOINT.r2.cloudflarestorage.com"
+  # Make sure the Agents will enforce authentication.
+  WARPSTREAM_REQUIRE_AUTHENTICATION = "true"
+  # For the Agents to report IP6 IP addreses for internal communication between them within the
+  # fly.io network because fly.io does not support IP4 internally.
+  WARPSTREAM_REPORT_DISCOVERY_IP6 = "true"
+
+[[services]]
+  # Agents will listen for Kafka traffic on port 9092 by default.
+  protocol = "tcp"
+  internal_port = 9092
+  processes = ["app"]
+
+  [[services.ports]]
+    # Expose Kafka on port 9092 externally as well, and ask fly.io to perform TLS termination
+    # for us.
+    port = 9092
+    handlers = ["tls"]
+
+  [services.concurrency]
+    type = "connections"
+    # Defaults, consider tuning these based on benchmarking.
+    hard_limit = 25
+    soft_limit = 20
+
+[[services.tcp_checks]]
+  grace_period = "5s"
+  interval = "15s"
+  timeout = "5s"
+
+[metrics]
+  # Collect prometheus metrics automatically.
+  port = 8080
+  path = "/metrics"
