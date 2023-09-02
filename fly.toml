@@ -43,7 +43,7 @@ kill_timeout = "1m0s"
   [services.concurrency]
     type = "connections"
     # Defaults, consider tuning these based on benchmarking.
-    hard_limit = 25
+    hard_limit = 1000
     soft_limit = 20
 
 [[services.tcp_checks]]
