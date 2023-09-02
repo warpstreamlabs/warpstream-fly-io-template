@@ -42,7 +42,8 @@ kill_timeout = "1m0s"
 
   [services.concurrency]
     type = "connections"
-    # Defaults, consider tuning these based on benchmarking.
+    # Defaults, consider tuning these based on benchmarking and your workload. High default
+    # hard_limit because some consumer/producer applications will make a lot of connections.
     hard_limit = 1000
     soft_limit = 20
 
