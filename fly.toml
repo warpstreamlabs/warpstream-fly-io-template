@@ -42,10 +42,14 @@ kill_timeout = "1m0s"
 
   [services.concurrency]
     type = "connections"
-    # Defaults, consider tuning these based on benchmarking and your workload. High default
-    # hard_limit because some consumer/producer applications will make a lot of connections.
+    # The rationale here is that we don't want fly.io to take "closeness" into account for load
+    # balancing purposes at all, at least not when we're deployed within a single region. Instead,
+    # we want fly.io to focus exclusively on keeping the number of connections amongst the agents
+    # as even as possible. Therefore we set the soft_limit to 0 so all the agents look like they're
+    # over their soft limit which encourages fly.io to route new connections to the least loaded
+    # instance instead of the closest one.
     hard_limit = 1000
-    soft_limit = 20
+    soft_limit = 0
 
 [[services.tcp_checks]]
   grace_period = "5s"
