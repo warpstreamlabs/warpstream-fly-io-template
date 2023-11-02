@@ -9,13 +9,12 @@ kill_timeout = "1m0s"
 [build]
 
 [env]
+  # For the Agents to report IP6 IP addresses for internal communication between them within the
+  # fly.io network because fly.io does not support IP4 internally.
+  WARPSTREAM_ADVERTISE_HOSTNAME_STRATEGY = "auto-ip6"
   # This is required because otherwise the Agent's will advertise their internal fly.io IP6
   # address to the service discovery system for the Kafka service, but this IP address is
   # not routable from outside of your fly.io VPC.
-  WARPSTREAM_ADVERTISE_HOSTNAME_STRATEGY = "custom"
-  WARPSTREAM_ADVERTISE_HOSTNAME_CUSTOM = "YOUR_APP_NAME.fly.dev"
-  # This one is not required, but is included in case you want to expose the Kafka protocol
-  # with a different hostname
   WARPSTREAM_DISCOVERY_KAFKA_HOSTNAME_OVERRIDE = "YOUR_APP_NAME.fly.dev"
   # This one is not required, but is included in case you want to expose the Kafka protocol
   # on a port besides 9092 externally.
@@ -28,9 +27,6 @@ kill_timeout = "1m0s"
   WARPSTREAM_BUCKET_URL = "s3://FILL_ME_IN_BUCKET_NAME?s3ForcePathStyle=true&region=auto&endpoint=https://FILL_ME_IN_ENDPOINT.r2.cloudflarestorage.com"
   # Make sure the Agents will enforce authentication.
   WARPSTREAM_REQUIRE_AUTHENTICATION = "true"
-  # For the Agents to report IP6 IP addreses for internal communication between them within the
-  # fly.io network because fly.io does not support IP4 internally.
-  WARPSTREAM_ADVERTISE_HOSTNAME_STRATEGY = "auto-ip6"
 
 [[services]]
   # Agents will listen for Kafka traffic on port 9092 by default.
