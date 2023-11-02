@@ -9,7 +9,7 @@ kill_timeout = "1m0s"
 [build]
 
 [env]
-  # For the Agents to report IP6 IP addreses for internal communication between them within the
+  # For the Agents to report IP6 IP addresses for internal communication between them within the
   # fly.io network because fly.io does not support IP4 internally.
   WARPSTREAM_ADVERTISE_HOSTNAME_STRATEGY = "auto-ip6"
   # This is required because otherwise the Agent's will advertise their internal fly.io IP6
