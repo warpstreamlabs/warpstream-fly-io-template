@@ -30,7 +30,7 @@ kill_timeout = "1m0s"
   WARPSTREAM_REQUIRE_AUTHENTICATION = "true"
   # For the Agents to report IP6 IP addreses for internal communication between them within the
   # fly.io network because fly.io does not support IP4 internally.
-  WARPSTREAM_REPORT_DISCOVERY_IP6 = "true"
+  WARPSTREAM_ADVERTISE_HOSTNAME_STRATEGY = "auto-ip6"
 
 [[services]]
   # Agents will listen for Kafka traffic on port 9092 by default.
